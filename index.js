@@ -19,7 +19,7 @@ try {
   // Replace this section with your own validation logic
 
   // Log the JSON content
-  console.log('JSON Content:', jsonContent);
+  //console.log('JSON Content:', jsonContent);
 
   // Set the JSON content as an output
   core.setOutput('json', jsonContent);
