@@ -1,4 +1,4 @@
-name: Custom JSON Validation
+name: Custom Recipe Validation
 description: Custom GitHub Action to validate a JSON file against a schema
 inputs:
   json-file:
