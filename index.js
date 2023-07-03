@@ -9,17 +9,17 @@ try {
   // Read the JSON file content
   const jsonContent = fs.readFileSync(jsonFilePath, 'utf8');
 
-//   // Read the schema file path from the input
-//   const schemaFilePath = core.getInput('schema-file');
+  // Read the schema file path from the input
+  const schemaFilePath = core.getInput('schema-file');
 
-//   // Read the schema file content
-//   const schemaContent = fs.readFileSync(schemaFilePath, 'utf8');
+  // Read the schema file content
+  const schemaContent = fs.readFileSync(schemaFilePath, 'utf8');
 
-//   // Perform validation using your chosen JSON schema library
-//   // Replace this section with your own validation logic
+  // Perform validation using your chosen JSON schema library
+  // Replace this section with your own validation logic
 
-//   // Log the JSON content
-//   console.log('JSON Content:', jsonContent);
+  // Log the JSON content
+  console.log('JSON Content:', jsonContent);
 
   // Set the JSON content as an output
   core.setOutput('json', jsonContent);
