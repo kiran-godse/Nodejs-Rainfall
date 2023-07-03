@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const fs = require('fs');
+const Ajv = require('ajv');
 
 try {
   // Read the JSON file path from the input
@@ -15,14 +16,28 @@ try {
   // Read the schema file content
   const schemaContent = fs.readFileSync(schemaFilePath, 'utf8');
 
-  // Perform validation using your chosen JSON schema library
-  // Replace this section with your own validation logic
+  // Parse the JSON schema
+  const schema = JSON.parse(schemaContent);
 
-  // Log the JSON content
-  //console.log('JSON Content:', jsonContent);
+  // Create an instance of AJV
+  const ajv = new Ajv();
 
-  // Set the JSON content as an output
-  core.setOutput('json', jsonContent);
+  // Compile the schema
+  const validate = ajv.compile(schema);
+
+  // Validate the JSON content against the schema
+  const isValid = validate(JSON.parse(jsonContent));
+
+  if (isValid) {
+    // Log the JSON content
+    console.log('JSON Content:', jsonContent);
+
+    // Set the JSON content as an output
+    core.setOutput('json', jsonContent);
+  } else {
+    // If validation fails, set an error
+    core.setFailed('Invalid JSON file. Validation failed.');
+  }
 } catch (error) {
   core.setFailed(`Action failed with error: ${error}`);
 }
