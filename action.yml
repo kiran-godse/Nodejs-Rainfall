@@ -1,18 +1,15 @@
-name: Planner Action
-description: Validates JSON and extracts content for Planner workflow
+name: Custom JSON Validation
+description: Custom GitHub Action to validate a JSON file against a schema
 inputs:
   json-file:
-    description: Path to the JSON file
+    description: 'Path to the JSON file'
+    required: true
+  schema-file:
+    description: 'Path to the schema file'
     required: true
 outputs:
-  substrate-tag:
-    description: The Substrate Tag
-  substrate-name:
-    description: The Substrate Name
-  substrate-registry:
-    description: The Substrate Registry
-  substrate-auth:
-    description: The Substrate Auth
+  json:
+    description: 'JSON content'
 runs:
-  using: "node12"
-  main: "index.js"
+  using: 'node12'
+  main: 'index.js'
