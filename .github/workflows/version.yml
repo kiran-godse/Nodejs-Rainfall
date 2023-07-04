@@ -1,0 +1,59 @@
+name: Planner
+
+on:
+  workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: 'Force Rebuild'
+        required: false
+        default: false
+        type: boolean
+  push:
+    branches: [ "master" ]
+    paths:
+      - '**/cmake-**.yml'
+      - '**/cmake/**.json'
+  schedule:
+    - cron: '0 0 * * 0' # “At 00:00 on every Sunday”
+
+jobs:
+  planner-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v3
+
+      - name: Fetch Action Files
+        uses: actions/checkout@v3
+        with:
+          repository: owner/repo
+          path: .github/actions/planner-action
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Validate JSON
+        id: validation
+        run: |
+          json_file_path="./recipe/cmake/recipe.json"
+          schema_file_path=".schema/recipe.json"
+
+          node ./.github/actions/planner-action/index.js --json-file "$json_file_path" --schema-file "$schema_file_path"
+
+      - name: Extract JSON Content
+        id: extract_content
+        run: |
+          json_content=$(cat ./recipe/cmake/recipe.json)
+          echo "JSON Content: $json_content"
+
+      - name: Test Outputs
+        run: |
+          substrate_tag=$(echo "${{ steps.validation.outputs.recipe-properties }}" | jq -r '.substrate.tag')
+          substrate_name=$(echo "${{ steps.validation.outputs.recipe-properties }}" | jq -r '.substrate.name')
+          substrate_registry=$(echo "${{ steps.validation.outputs.recipe-properties }}" | jq -r '.substrate.registry')
+          substrate_auth=$(echo "${{ steps.validation.outputs.recipe-properties }}" | jq -r '.substrate.needs_auth')
+
+          echo "Substrate Tag: $substrate_tag"
+          echo "Substrate Name: $substrate_name"
+          echo "Substrate Registry: $substrate_registry"
+          echo "Substrate Auth: $substrate_auth"
