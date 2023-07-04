@@ -1,15 +1,13 @@
-name: Custom JSON Validation
-description: Custom GitHub Action to validate a JSON file against a schema
+name: Validate Recipe
+description: A GitHub Action to validate a recipe file and fetch its properties
+author: Your Name
 inputs:
-  json-file:
-    description: 'Path to the JSON file'
-    required: true
-  schema-file:
-    description: 'Path to the schema file'
+  recipe-file:
+    description: The path to the recipe file
     required: true
 outputs:
-  json:
-    description: 'JSON content'
+  recipe-properties:
+    description: The properties extracted from the recipe file
 runs:
-  using: 'node12'
-  main: 'index.js'
+  using: node12
+  main: index.js
