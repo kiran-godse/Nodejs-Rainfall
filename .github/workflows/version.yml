@@ -15,21 +15,15 @@ jobs:
       - name: Checkout Codebase
         uses: actions/checkout@v3
 
-      - name: Validate JSON
-        id: validation
-        run: |
-          npm install ajv
-          node .github/actions/planner-action/index.js
-
-      - name: Extract JSON Content
-        id: extract_content
-        run: |
-          json_content=$(cat ./recipe/cmake/recipe.json)
-          echo "JSON Content: $json_content"
+      - name: Validate JSON and Extract Content
+        id: planner-action
+        uses: ./.github/actions/planner-action
+        with:
+          json-file: ./recipe/cmake/recipe.json
 
       - name: Test Outputs
         run: |
-          echo "Substrate Tag: ${{ env.substrate_tag }}"
-          echo "Substrate Name: ${{ env.substrate_name }}"
-          echo "Substrate Registry: ${{ env.substrate_registry }}"
-          echo "Substrate Auth: ${{ env.substrate_auth }}"
+          echo "Substrate Tag: ${{ steps.planner-action.outputs.substrate-tag }}"
+          echo "Substrate Name: ${{ steps.planner-action.outputs.substrate-name }}"
+          echo "Substrate Registry: ${{ steps.planner-action.outputs.substrate-registry }}"
+          echo "Substrate Auth: ${{ steps.planner-action.outputs.substrate-auth }}"
