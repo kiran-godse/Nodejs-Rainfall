@@ -1,25 +1,27 @@
 const core = require('@actions/core');
 const fs = require('fs');
-const Ajv = require('ajv');
 
 try {
-  const recipeFilePath = core.getInput('recipe-file');
-  const recipeContent = fs.readFileSync(recipeFilePath, 'utf8');
-  const recipe = JSON.parse(recipeContent);
+  // Get the path to the JSON file from the input
+  const jsonFilePath = core.getInput('json-file');
 
-  const schemaFilePath = '.schema/recipe.json';
-  const schemaContent = fs.readFileSync(schemaFilePath, 'utf8');
-  const schema = JSON.parse(schemaContent);
+  // Read the JSON file
+  const jsonData = fs.readFileSync(jsonFilePath, 'utf8');
 
-  const ajv = new Ajv();
-  const validate = ajv.compile(schema);
-  const valid = validate(recipe);
+  // Parse the JSON data
+  const data = JSON.parse(jsonData);
 
-  if (!valid) {
-    core.setFailed('Recipe validation failed. Errors: ' + JSON.stringify(validate.errors));
-  } else {
-    core.setOutput('recipe-properties', JSON.stringify(recipe));
-  }
+  // Extract the desired properties
+  const substrateTag = data.substrate.tag;
+  const substrateName = data.substrate.name;
+  const substrateRegistry = data.substrate.registry;
+  const substrateAuth = data.substrate.auth;
+
+  // Set the outputs
+  core.setOutput('substrate-tag', substrateTag);
+  core.setOutput('substrate-name', substrateName);
+  core.setOutput('substrate-registry', substrateRegistry);
+  core.setOutput('substrate-auth', substrateAuth);
 } catch (error) {
-  core.setFailed('An error occurred: ' + error.message);
+  core.setFailed(error.message);
 }
