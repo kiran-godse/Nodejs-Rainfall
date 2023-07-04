@@ -1,27 +1,28 @@
 const core = require('@actions/core');
+const github = require('@actions/github');
 const fs = require('fs');
 
 try {
-  // Get the path to the JSON file from the input
+  // Read the JSON file path from the input
   const jsonFilePath = core.getInput('json-file');
 
-  // Read the JSON file
-  const jsonData = fs.readFileSync(jsonFilePath, 'utf8');
+  // Read the JSON file content
+  const jsonContent = fs.readFileSync(jsonFilePath, 'utf8');
 
-  // Parse the JSON data
-  const data = JSON.parse(jsonData);
+  // Read the schema file path from the input
+  const schemaFilePath = core.getInput('schema-file');
 
-  // Extract the desired properties
-  const substrateTag = data.substrate.tag;
-  const substrateName = data.substrate.name;
-  const substrateRegistry = data.substrate.registry;
-  const substrateAuth = data.substrate.auth;
+  // Read the schema file content
+  const schemaContent = fs.readFileSync(schemaFilePath, 'utf8');
 
-  // Set the outputs
-  core.setOutput('substrate-tag', substrateTag);
-  core.setOutput('substrate-name', substrateName);
-  core.setOutput('substrate-registry', substrateRegistry);
-  core.setOutput('substrate-auth', substrateAuth);
+  // Perform validation using your chosen JSON schema library
+  // Replace this section with your own validation logic
+
+  // Log the JSON content
+  //console.log('JSON Content:', jsonContent);
+
+  // Set the JSON content as an output
+  core.setOutput('json', jsonContent);
 } catch (error) {
-  core.setFailed(error.message);
+  core.setFailed(`Action failed with error: ${error}`);
 }
