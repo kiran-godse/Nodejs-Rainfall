@@ -35,22 +35,9 @@ try {
     const needsAuth = recipe.substrate.needs_auth;
 
     // Get the upstream version and local version from the image property
-    const image = recipe.image;
-
-    let upstreamVersion = "";
-    let localVersion = "";
-
-    if (image) {
-      const imageMatch = image.match(/:(.+)/);
-
-      if (imageMatch) {
-        const versionSplit = imageMatch[1].split("-");
-        upstreamVersion = versionSplit[0];
-        localVersion = versionSplit[0];
-      }
-    } else {
-      console.log("Image property not found in the JSON file.");
-    }
+    const image = "docker.io/debian:stable-slim";
+    const [upstreamVersion] = image.split(":")[1].split("-");
+    const [localVersion] = image.split(":")[1].split("-");
 
     console.log("Upstream Version:", upstreamVersion);
     console.log("Local Version:", localVersion);
