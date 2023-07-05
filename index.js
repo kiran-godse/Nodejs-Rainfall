@@ -36,16 +36,22 @@ try {
 
     // Get the upstream version and local version from the image property
     const image = recipe.image;
-    const [upstreamVersion] = image.match(/:(.+)$/)[1].split("-");
-    const [localVersion] = image.match(/:(.+)$/)[1].split("-");
 
-    // Print the values
+    if (image) {
+      const [upstreamVersion] = image.match(/:(.+)$/)[1].split("-");
+      const [localVersion] = image.match(/:(.+)$/)[1].split("-");
+
+      console.log("Upstream Version:", upstreamVersion);
+      console.log("Local Version:", localVersion);
+    } else {
+      console.log("Image property not found in the JSON file.");
+    }
+
+    // Print the other values
     console.log("Name:", name);
     console.log("Tag:", tag);
     console.log("Registry:", registry);
     console.log("NeedsAuth:", needsAuth);
-    console.log("Upstream Version:", upstreamVersion);
-    console.log("Local Version:", localVersion);
 
     // Set the JSON content as an output
     core.setOutput("json", jsonContent);
