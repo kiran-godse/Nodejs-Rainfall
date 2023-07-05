@@ -1,12 +1,8 @@
 const Ajv2020 = require("ajv/dist/2020");
 const core = require("@actions/core");
 const fs = require("fs");
-const addFormats = require("ajv-formats");
-const ajvKeywords = require("ajv-keywords");
 
 const ajv = new Ajv2020();
-addFormats(ajv);
-ajvKeywords(ajv);
 
 try {
   // Read the JSON file path from the input
@@ -21,23 +17,21 @@ try {
   // Read the schema file content
   const schemaContent = fs.readFileSync(schemaFilePath, "utf8");
 
+  // Compile the schema
   const validate = ajv.compile(JSON.parse(schemaContent));
 
-  // Perform validation using the compiled schema
+  // Validate the JSON content against the schema
   const valid = validate(JSON.parse(jsonContent));
 
-  if (!valid) {
-    console.log("Validation errors:", validate.errors);
-    core.setFailed("JSON content is not valid according to the schema");
+  if (valid) {
+    console.log("Validation successful");
+    // Set the JSON content as an output
+    core.setOutput("json", jsonContent);
   } else {
-    console.log("JSON content is valid according to the schema");
+    console.log("Validation failed");
+    console.log(validate.errors);
+    core.setFailed("Validation failed. Please check the JSON content against the schema.");
   }
-
-  // Log the JSON content
-  console.log("JSON Content:", jsonContent);
-
-  // Set the JSON content as an output
-  core.setOutput("json", jsonContent);
 } catch (error) {
   core.setFailed(`Action failed with error: ${error}`);
 }
