@@ -1,12 +1,12 @@
+import Ajv2019 from "ajv/dist/2019"
 const core = require("@actions/core");
 const github = require("@actions/github");
 const fs = require("fs");
-const Ajv = require("ajv");
 const addFormats = require("ajv-formats");
-//const ajvKeywords = require("ajv-keywords");
-const AjvKeywords = require('ajv-keywords');
+const ajvKeywords = require("ajv-keywords");
+//const AjvKeywords = require('ajv-keywords');
 
-const ajv = new Ajv();
+const ajv = new Ajv2019()
 addFormats(ajv);
 ajvKeywords(ajv);
 
