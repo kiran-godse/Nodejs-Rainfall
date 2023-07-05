@@ -1,4 +1,4 @@
-import Ajv2019 from "ajv/dist/2019"
+import Ajv2019 from "ajv/dist/2019.js"
 const core = require("@actions/core");
 const github = require("@actions/github");
 const fs = require("fs");
@@ -11,21 +11,27 @@ addFormats(ajv);
 ajvKeywords(ajv);
 
 try {
+
   // Read the JSON file path from the input
   const jsonFilePath = core.getInput("json-file");
 
   // Read the JSON file content
   const jsonContent = fs.readFileSync(jsonFilePath, "utf8");
-  
-// Read the schema file path from the input
-const schemaFilePath = core.getInput("schema-file");
-  
 
-// Read the schema file content
-const schemaContent = fs.readFileSync(schemaFilePath, "utf8");
-const schema = JSON.parse(schemaContent);
-const validate = ajv.compile(schema);
-const valid = validate(data)
+  // Read the schema file path from the input
+  const schemaFilePath = core.getInput("schema-file");
+
+
+  // Read the schema file content
+  const schemaContent = fs.readFileSync(schemaFilePath, "utf8");
+  //const schema_user = require("./schema_user.json")
+  const validate = ajv.getSchema(jsonContent)
+    || ajv.compile(schemaContent);
+
+  console.log("Validate", validate)
+  // const schema = JSON.parse(schemaContent);
+  // //const validate = ajv.compile(schema);
+  // const valid = validate(data)
 
   // Perform validation using your chosen JSON schema library
   // Replace this section with your own validation logic
