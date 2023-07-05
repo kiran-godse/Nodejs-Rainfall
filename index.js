@@ -10,15 +10,13 @@ try {
 
   // Read the JSON file content
   const jsonContent = fs.readFileSync(jsonFilePath, "utf8");
+// Read the schema file path from the input
+const schemaFilePath = core.getInput("schema-file");
 
-  // Read the schema file path from the input
-  const schemaFilePath = core.getInput("schema-file");
-
-  // Read the schema file content
-  const schemaContent = fs.readFileSync(schemaFilePath, "utf8");
-  const validate = ajv.compile(schemaContent);
-  const valid = validate(jsonContent);
-  if (!valid) console.log(validate.errors);
+// Read the schema file content
+const schemaContent = fs.readFileSync(schemaFilePath, "utf8");
+const schema = JSON.parse(schemaContent);
+const validate = ajv.compile(schema);
 
   // Perform validation using your chosen JSON schema library
   // Replace this section with your own validation logic
