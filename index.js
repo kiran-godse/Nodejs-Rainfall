@@ -1,17 +1,14 @@
-const Ajv2020 = require("ajv/dist/2020")
+const Ajv2020 = require("ajv/dist/2020");
 const core = require("@actions/core");
-const github = require("@actions/github");
 const fs = require("fs");
 const addFormats = require("ajv-formats");
 const ajvKeywords = require("ajv-keywords");
-//const AjvKeywords = require('ajv-keywords');
 
-const ajv = new Ajv2020()
+const ajv = new Ajv2020();
 addFormats(ajv);
 ajvKeywords(ajv);
 
 try {
-
   // Read the JSON file path from the input
   const jsonFilePath = core.getInput("json-file");
 
@@ -21,20 +18,20 @@ try {
   // Read the schema file path from the input
   const schemaFilePath = core.getInput("schema-file");
 
-
   // Read the schema file content
   const schemaContent = fs.readFileSync(schemaFilePath, "utf8");
-  //const schema_user = require("./schema_user.json")
-  const validate = ajv.getSchema(jsonContent)
-    || ajv.compile(schemaContent);
 
-  console.log("Validate", validate)
-  // const schema = JSON.parse(schemaContent);
-  // //const validate = ajv.compile(schema);
-  // const valid = validate(data)
+  const validate = ajv.compile(JSON.parse(schemaContent));
 
-  // Perform validation using your chosen JSON schema library
-  // Replace this section with your own validation logic
+  // Perform validation using the compiled schema
+  const valid = validate(JSON.parse(jsonContent));
+
+  if (!valid) {
+    console.log("Validation errors:", validate.errors);
+    core.setFailed("JSON content is not valid according to the schema");
+  } else {
+    console.log("JSON content is valid according to the schema");
+  }
 
   // Log the JSON content
   console.log("JSON Content:", jsonContent);
