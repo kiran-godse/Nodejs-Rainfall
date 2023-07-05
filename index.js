@@ -2,7 +2,12 @@ const core = require("@actions/core");
 const github = require("@actions/github");
 const fs = require("fs");
 const Ajv = require("ajv");
+const addFormats = require("ajv-formats");
+const ajvKeywords = require("ajv-keywords");
+
 const ajv = new Ajv();
+addFormats(ajv);
+ajvKeywords(ajv);
 
 try {
   // Read the JSON file path from the input
@@ -10,6 +15,7 @@ try {
 
   // Read the JSON file content
   const jsonContent = fs.readFileSync(jsonFilePath, "utf8");
+  
 // Read the schema file path from the input
 const schemaFilePath = core.getInput("schema-file");
 
