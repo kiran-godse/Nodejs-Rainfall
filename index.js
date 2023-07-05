@@ -1,6 +1,7 @@
 const Ajv2020 = require("ajv/dist/2020");
 const core = require("@actions/core");
 const fs = require("fs");
+
 const ajv = new Ajv2020();
 
 try {
@@ -34,15 +35,7 @@ try {
     const registry = recipe.substrate.registry;
     const needsAuth = recipe.substrate.needs_auth;
 
-    // Get the upstream version and local version from the image property
-    const image = "docker.io/debian:stable-slim";
-    const [upstreamVersion] = image.split(":")[1].split("-");
-    const [localVersion] = image.split(":")[1].split("-");
-
-    console.log("Upstream Version:", upstreamVersion);
-    console.log("Local Version:", localVersion);
-
-    // Print the other values
+    // Print the values
     console.log("Name:", name);
     console.log("Tag:", tag);
     console.log("Registry:", registry);
