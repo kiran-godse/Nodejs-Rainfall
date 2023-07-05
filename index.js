@@ -1,7 +1,6 @@
 const Ajv2020 = require("ajv/dist/2020");
 const core = require("@actions/core");
 const fs = require("fs");
-
 const ajv = new Ajv2020();
 
 try {
@@ -35,11 +34,18 @@ try {
     const registry = recipe.substrate.registry;
     const needsAuth = recipe.substrate.needs_auth;
 
+    // Get the upstream version and local version from the image property
+    const image = recipe.image;
+    const [upstreamVersion] = image.match(/:(.+)$/)[1].split("-");
+    const [localVersion] = image.match(/:(.+)$/)[1].split("-");
+
     // Print the values
     console.log("Name:", name);
     console.log("Tag:", tag);
     console.log("Registry:", registry);
     console.log("NeedsAuth:", needsAuth);
+    console.log("Upstream Version:", upstreamVersion);
+    console.log("Local Version:", localVersion);
 
     // Set the JSON content as an output
     core.setOutput("json", jsonContent);
