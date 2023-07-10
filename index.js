@@ -65,7 +65,7 @@ try {
     console.log("NeedsAuth:", needsAuth);
 
     // Fetch the latest version of the base image from the repository
-    const repository = 'rainfall-one/vulcan';
+    const repository = 'https://github.com/rainfall-one/vulcan';
     getLatestVersion(repository)
       .then(latestVersion => {
         if (latestVersion) {
