@@ -1,11 +1,31 @@
 const Ajv2020 = require("ajv/dist/2020");
 const core = require("@actions/core");
 const fs = require("fs");
+const fetch = require('node-fetch');
 
 const ajv = new Ajv2020({ strictTypes: false });
 
 // Add the `allowUnionTypes` option to the Ajv instance
 ajv.opts.allowUnionTypes = true;
+
+async function getLatestVersion(repository) {
+  try {
+    const response = await fetch(`https://registry.hub.docker.com/v2/repositories/${repository}/tags`);
+    const data = await response.json();
+    
+    if (response.status === 200) {
+      const tags = data.results.map(tag => tag.name);
+      const latestVersion = tags.sort().pop(); // Assuming tags follow a standard versioning scheme
+
+      return latestVersion;
+    } else {
+      throw new Error(`Failed to fetch tags for ${repository}`);
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
 
 try {
   // Read the JSON file path from the input
@@ -43,6 +63,20 @@ try {
     console.log("Tag:", tag);
     console.log("Registry:", registry);
     console.log("NeedsAuth:", needsAuth);
+
+    // Fetch the latest version of the base image from the repository
+    const repository = 'rainfall-one/vulcan';
+    getLatestVersion(repository)
+      .then(latestVersion => {
+        if (latestVersion) {
+          console.log(`Latest version of ${repository}: ${latestVersion}`);
+        } else {
+          console.log(`Failed to retrieve the latest version of ${repository}`);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
 
     // Set the JSON content as an output
     core.setOutput("json", jsonContent);
