@@ -1,7 +1,7 @@
 const Ajv2020 = require("ajv/dist/2020");
 const core = require("@actions/core");
 const fs = require("fs");
-
+const image = "mcr.microsoft.com/devcontainers/base:bullseye";
 const ajv = new Ajv2020();
 
 try {
@@ -25,6 +25,22 @@ try {
 
   if (valid) {
     console.log("Validation successful");
+
+    // Parse the JSON content
+    const recipe = JSON.parse(jsonContent);
+
+    // Access the properties
+    const name = recipe.package.name;
+    const tag = recipe.substrate.tag;
+    const registry = recipe.substrate.registry;
+    const needsAuth = recipe.substrate.needs_auth;
+
+    // Print the values
+    console.log("Name:", name);
+    console.log("Tag:", tag);
+    console.log("Registry:", registry);
+    console.log("NeedsAuth:", needsAuth);
+
     // Set the JSON content as an output
     core.setOutput("json", jsonContent);
   } else {
