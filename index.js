@@ -1,53 +1,39 @@
-const Ajv2020 = require("ajv/dist/2020");
-const core = require("@actions/core");
-const fs = require("fs");
-const image = "mcr.microsoft.com/devcontainers/base:bullseye";
-const ajv = new Ajv2020();
+const Ajv = require('ajv');
+const ajvKeywords = require('ajv-keywords');
+const schema = require('./schema.json'); // Assuming the schema.json and recipe.json files are in the same directory
+const recipeData = require('./recipe.json');
+//Remove the $schema keyword from the schema
+delete schema['$schema'];
 
-try {
-  // Read the JSON file path from the input
-  const jsonFilePath = core.getInput("json-file");
+const ajv = new Ajv.default({ allErrors: true });
+ajvKeywords(ajv, ['regexp']);
 
-  // Read the JSON file content
-  const jsonContent = fs.readFileSync(jsonFilePath, "utf8");
+validateRecipe(recipeData);
+readRecipe(recipeData);
 
-  // Read the schema file path from the input
-  const schemaFilePath = core.getInput("schema-file");
 
-  // Read the schema file content
-  const schemaContent = fs.readFileSync(schemaFilePath, "utf8");
+function validateRecipe(data) {
+    const validate = ajv.compile(schema);
+    const isValid = validate(data);
 
-  // Compile the schema
-  const validate = ajv.compile(JSON.parse(schemaContent));
+    if (isValid) {
+        console.log('Recipe is valid!');
 
-  // Validate the JSON content against the schema
-  const valid = validate(JSON.parse(jsonContent));
+        //  console.log('Substrate data:', data.substrate);
+    } else {
+        console.log('Recipe is invalid:', validate.errors);
+    }
 
-  if (valid) {
-    console.log("Validation successful");
+    return isValid;
 
-    // Parse the JSON content
-    const recipe = JSON.parse(jsonContent);
 
-    // Access the properties
-    const name = recipe.package.name;
-    const tag = recipe.substrate.tag;
-    const registry = recipe.substrate.registry;
-    const needsAuth = recipe.substrate.needs_auth;
+};
 
-    // Print the values
-    console.log("Name:", name);
-    console.log("Tag:", tag);
-    console.log("Registry:", registry);
-    console.log("NeedsAuth:", needsAuth);
+function readRecipe(data) {
+    const isValid = validateRecipe(data);
+    if (isValid) {
+        // const recipeData = JSON.parse(data);
+        console.log('Substrate data:', data.substrate);
 
-    // Set the JSON content as an output
-    core.setOutput("json", jsonContent);
-  } else {
-    console.log("Validation failed");
-    console.log(validate.errors);
-    core.setFailed("Validation failed. Please check the JSON content against the schema.");
-  }
-} catch (error) {
-  core.setFailed(`Action failed with error: ${error}`);
+    }
 }
