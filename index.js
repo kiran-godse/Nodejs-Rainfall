@@ -1,6 +1,6 @@
 const Ajv = require('ajv');
 const ajvKeywords = require('ajv-keywords');
-const schema = require('./schema.json'); // Assuming the schema.json and recipe.json files are in the same directory
+const schema = require('./schema.json'); 
 const recipeData = require('./recipe.json');
 //Remove the $schema keyword from the schema
 delete schema['$schema'];
