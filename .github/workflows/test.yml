@@ -24,3 +24,10 @@ jobs:
 
       - name: Run tests
         run: npm test
+        
+      - name: Audit npm packages
+        run: npm audit
+
+      - name: Fix npm audit issues
+        run: npm audit fix
+
