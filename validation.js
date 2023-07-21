@@ -1,6 +1,6 @@
 const Ajv = require('ajv');
 const ajvKeywords = require('ajv-keywords');
-const schema = require('./schema.json'); // Assuming the schema.json and recipe.json files are in the same directory
+const schema = require('./schema.json');
 const recipeData = require('./recipe.json');
 //Remove the $schema keyword from the schema
 delete schema['$schema'];
@@ -18,23 +18,22 @@ function validateRecipe(data) {
 
     if (isValid) {
         console.log('Recipe is valid!');
-
-        //  console.log('Substrate data:', data.substrate);
+        return true;
     } else {
         console.log('Recipe is invalid:', validate.errors);
+        return false;
     }
-
-    return isValid;
-
-
 };
 
 function readRecipe(data) {
-    const isValid = validateRecipe(data);
-    if (isValid) {
-        // const recipeData = JSON.parse(data);
+    if (validateRecipe(data)) {
         console.log('Substrate data:', data.substrate);
-
-    }
+    } 
 }
 
+
+// Export the functions so they can be used in other files
+module.exports = {
+    validateRecipe,
+    readRecipe
+};
