@@ -16,7 +16,7 @@ function validateRecipe(data) {
         console.log('Recipe is valid!');
         return true;
     } else {
-        console.log('Recipe is invalid:', validate.errors);
+        console.log('Recipe is invalid check again:', validate.errors);
         return false;
     }
 }
